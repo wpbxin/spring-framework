@@ -618,6 +618,8 @@ public abstract class StringUtils {
 	/**
 	 * Apply the given relative path to the given Java resource path,
 	 * assuming standard Java folder separation (i.e. "/" separators).
+	 * <p>将给定的相对路径应用于给定的Java资源路径，假定分隔符为 /
+	 * <p>也就是将给定的 相对路径 拼接到 给定的 Java 资源路径
 	 * @param path the path to start from (usually a full file path)
 	 * @param relativePath the relative path to apply
 	 * (relative to the full file path above)

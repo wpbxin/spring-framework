@@ -41,6 +41,8 @@ public class FileSystemResourceLoader extends DefaultResourceLoader {
 	 * Resolve resource paths as file system paths.
 	 * <p>Note: Even if a given path starts with a slash, it will get
 	 * interpreted as relative to the current VM working directory.
+	 * <p>返回 FileSystemContextResource 类型的资源
+	 * 将资源路径解析为文件系统路径，以 / 开头的会被解析为 VM 当前工作目录的相对路径
 	 * @param path the path to the resource
 	 * @return the corresponding Resource handle
 	 * @see FileSystemResource
@@ -48,6 +50,7 @@ public class FileSystemResourceLoader extends DefaultResourceLoader {
 	 */
 	@Override
 	protected Resource getResourceByPath(String path) {
+		// 截取开头的 /，会当作 context 上下文的额相对路径
 		if (path.startsWith("/")) {
 			path = path.substring(1);
 		}
@@ -58,6 +61,7 @@ public class FileSystemResourceLoader extends DefaultResourceLoader {
 	/**
 	 * FileSystemResource that explicitly expresses a context-relative path
 	 * through implementing the ContextResource interface.
+	 * <p>通过实现 ContextResource 接口显式地表示上下文相关路径的 FileSystemResource
 	 */
 	private static class FileSystemContextResource extends FileSystemResource implements ContextResource {
 
@@ -65,6 +69,7 @@ public class FileSystemResourceLoader extends DefaultResourceLoader {
 			super(path);
 		}
 
+		// 返回文件资源的路径
 		@Override
 		public String getPathWithinContext() {
 			return getPath();
