@@ -319,7 +319,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Loading XML bean definitions from " + encodedResource);
 		}
-		// 记录已经加载的资源
+		// 1、记录已经加载的资源
 		Set<EncodedResource> currentResources = this.resourcesCurrentlyBeingLoaded.get();
 		if (currentResources == null) {
 			currentResources = new HashSet<>(4);
@@ -330,7 +330,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 					"Detected cyclic loading of " + encodedResource + " - check your import definitions!");
 		}
 		try {
-			// 从 EncodedResource 中封装的 Resource 中获取对应的 InputStream
+			// 2、从 EncodedResource 中封装的 Resource 中获取对应的 InputStream
 			InputStream inputStream = encodedResource.getResource().getInputStream();
 			try {
 				// 封装成 org.xml.sax.InputSource
@@ -350,7 +350,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 					"IOException parsing XML document from " + encodedResource.getResource(), ex);
 		}
 		finally {
-			currentResources.remove(encodedResource);
+			currentResources.remove(encodedResource); // 3、移除资源
 			if (currentResources.isEmpty()) {
 				this.resourcesCurrentlyBeingLoaded.remove();
 			}
@@ -396,9 +396,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			throws BeanDefinitionStoreException {
 
 		try {
-			// 加载 XML 文件，并得到对应的Document（内部会先获取对 XML 文件的验证模式）
+			// 1、加载 XML 文件，并得到对应的Document（内部会先获取对 XML 文件的验证模式）
 			Document doc = doLoadDocument(inputSource, resource);
-			// 实际的解析和注册 BeanDefinition
+			// 2、根据 Document 解析和注册 BeanDefinition
 			int count = registerBeanDefinitions(doc, resource);
 			if (logger.isDebugEnabled()) {
 				logger.debug("Loaded " + count + " bean definitions from " + resource);
