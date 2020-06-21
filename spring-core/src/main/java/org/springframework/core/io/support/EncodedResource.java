@@ -31,10 +31,10 @@ import org.springframework.util.ObjectUtils;
 /**
  * Holder that combines a {@link Resource} descriptor with a specific encoding
  * or {@code Charset} to be used for reading from the resource.
- *
+ * <p>结合了指定用于资源读取的编码或者字符集和 Resource 描述符的 Holder
  * <p>Used as an argument for operations that support reading content with
  * a specific encoding, typically via a {@code java.io.Reader}.
- *
+ * <p>用作支持使用特定编码读取内容的操作(通常是通过java.io.Reader)的参数。
  * @author Juergen Hoeller
  * @author Sam Brannen
  * @since 1.2.6
@@ -131,6 +131,7 @@ public class EncodedResource implements InputStreamSource {
 	 * Open a {@code java.io.Reader} for the specified resource, using the specified
 	 * {@link #getCharset() Charset} or {@linkplain #getEncoding() encoding}
 	 * (if any).
+	 * <p>使用指定的字符集或编码(如果有的话)为指定的资源打开一个 java.io.Reader
 	 * @throws IOException if opening the Reader failed
 	 * @see #requiresReader()
 	 * @see #getInputStream()
