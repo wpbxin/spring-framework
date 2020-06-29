@@ -83,6 +83,7 @@ public class XmlValidationModeDetector {
 	/**
 	 * Detect the validation mode for the XML document in the supplied {@link InputStream}.
 	 * Note that the supplied {@link InputStream} is closed by this method before returning.
+	 * <p>通过提供的 XML 文档对应的 InputStream 来检测验证模式
 	 * @param inputStream the InputStream to parse
 	 * @throws IOException in case of I/O failure
 	 * @see #VALIDATION_DTD
@@ -132,20 +133,23 @@ public class XmlValidationModeDetector {
 	 * Does the supplied content contain an XML opening tag. If the parse state is currently
 	 * in an XML comment then this method always returns false. It is expected that all comment
 	 * tokens will have consumed for the supplied content before passing the remainder to this method.
+	 * <p>
 	 */
 	private boolean hasOpeningTag(String content) {
 		if (this.inComment) {
 			return false;
 		}
 		int openTagIndex = content.indexOf('<');
+		// < 存在 且 < 后面还有内容
 		return (openTagIndex > -1 && (content.length() > openTagIndex + 1) &&
-				Character.isLetter(content.charAt(openTagIndex + 1)));
+				Character.isLetter(content.charAt(openTagIndex + 1)));	// < 后面的内容是字母
 	}
 
 	/**
 	 * Consume all leading and trailing comments in the given String and return
 	 * the remaining content, which may be empty since the supplied content might
 	 * be all comment data.
+	 * <p>去掉给定字符串的前导和后导注释，并返回剩余的内容。结果可能是空，例如全是注释的情况下。
 	 */
 	@Nullable
 	private String consumeCommentTokens(String line) {

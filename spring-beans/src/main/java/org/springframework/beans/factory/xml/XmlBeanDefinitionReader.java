@@ -80,28 +80,32 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
 	/**
 	 * Indicates that the validation should be disabled.
+	 * <p>禁止验证模式
 	 */
 	public static final int VALIDATION_NONE = XmlValidationModeDetector.VALIDATION_NONE;
 
 	/**
 	 * Indicates that the validation mode should be detected automatically.
+	 * <p>自动检测验证模式
 	 */
 	public static final int VALIDATION_AUTO = XmlValidationModeDetector.VALIDATION_AUTO;
 
 	/**
 	 * Indicates that DTD validation should be used.
+	 * <p>DTD 验证模式
 	 */
 	public static final int VALIDATION_DTD = XmlValidationModeDetector.VALIDATION_DTD;
 
 	/**
 	 * Indicates that XSD validation should be used.
+	 * <p> XSD 验证模式
 	 */
 	public static final int VALIDATION_XSD = XmlValidationModeDetector.VALIDATION_XSD;
 
 
 	/** Constants instance for this class. */
 	private static final Constants constants = new Constants(XmlBeanDefinitionReader.class);
-
+	// 指定的验证模式，默认是自动检测
 	private int validationMode = VALIDATION_AUTO;
 
 	private boolean namespaceAware = false;
@@ -166,6 +170,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * <p>Note that this only activates or deactivates validation itself.
 	 * If you are switching validation off for schema files, you might need to
 	 * activate schema namespace support explicitly: see {@link #setNamespaceAware}.
+	 * <p>设置验证模式
 	 */
 	public void setValidationMode(int validationMode) {
 		this.validationMode = validationMode;
@@ -452,18 +457,22 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * <p>Override this method if you would like full control over the validation
 	 * mode, even when something other than {@link #VALIDATION_AUTO} was set.
 	 * <p>确定指定资源的验证模式。如果没有配置显式的验证模式，则从给定资源检测获取验证模式。
-	 * <p>如果需要完全控制验证模式，请覆盖此方法，即使在设置了VALIDATION_AUTO以外的内容时也是如此。
+	 * <p>如果需要完全控制验证模式，请覆盖此方法，即使在设置了 VALIDATION_AUTO 以外的内容时也是如此。
 	 * @see #detectValidationMode
 	 */
 	protected int getValidationModeForResource(Resource resource) {
+		// 1、获取指定地验证模式
 		int validationModeToUse = getValidationMode();
+		// 如果显式指定了验证模式则使用指定的验证模式
 		if (validationModeToUse != VALIDATION_AUTO) {
 			return validationModeToUse;
 		}
+		// 2、如果未指定则使用自动检测
 		int detectedMode = detectValidationMode(resource);
 		if (detectedMode != VALIDATION_AUTO) {
 			return detectedMode;
 		}
+		// 3、还是没有找到验证模式的显示声明，则最后默认使用 XSD 验证模式
 		// Hmm, we didn't get a clear indication... Let's assume XSD,
 		// since apparently no DTD declaration has been found up until
 		// detection stopped (before finding the document's root tag).
@@ -476,8 +485,12 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * definition then DTD validation is used otherwise XSD validation is assumed.
 	 * <p>Override this method if you would like to customize resolution
 	 * of the {@link #VALIDATION_AUTO} mode.
+	 * <p>检测 Resource 资源对应的 XML 文件需要执行的验证模式。
+	 * 如果 XML 有 DOCTYPE 声明，则使用 DTD，否则使用 XSD
+	 * <p>如果需要定制个性化的检测策略，得重写这个方法。
 	 */
 	protected int detectValidationMode(Resource resource) {
+		// 资源已被打开，抛出 BeanDefinitionStoreException 异常
 		if (resource.isOpen()) {
 			throw new BeanDefinitionStoreException(
 					"Passed-in Resource [" + resource + "] contains an open stream: " +
@@ -485,7 +498,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 					"that is able to create fresh streams, or explicitly specify the validationMode " +
 					"on your XmlBeanDefinitionReader instance.");
 		}
-
+		// 打开输入流
 		InputStream inputStream;
 		try {
 			inputStream = resource.getInputStream();
@@ -498,6 +511,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 		}
 
 		try {
+			// 获取 XML 文件相应的验证模式
 			return this.validationModeDetector.detectValidationMode(inputStream);
 		}
 		catch (IOException ex) {
