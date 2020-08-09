@@ -31,11 +31,16 @@ import org.springframework.lang.Nullable;
 /**
  * {@link EntityResolver} implementation for the Spring beans DTD,
  * to load the DTD from the Spring class path (or JAR file).
+ * <p>EntityResolver 实现类，Spring beans DTD 的解析器，从 Spring 的 classpath 或者 JAR 文件中加载 DTD。
  *
  * <p>Fetches "spring-beans.dtd" from the class path resource
  * "/org/springframework/beans/factory/xml/spring-beans.dtd",
  * no matter whether specified as some local URL that includes "spring-beans"
  * in the DTD name or as "https://www.springframework.org/dtd/spring-beans-2.0.dtd".
+ * <p>无论是否在 DTD 名称中指定了包含 "spring-beans" 的 URL，
+ * 还是使用 "https://www.springframework.org/dtd/spring-beans-2.0.dtd"，
+ * 都会从 classpath 资源 "/org/springframework/beans/factory/xml/spring-beans.dtd" 下
+ * 抓取 spring-beans.dtd" 文件 ，
  *
  * @author Juergen Hoeller
  * @author Colin Sampaleanu
@@ -43,9 +48,9 @@ import org.springframework.lang.Nullable;
  * @see ResourceEntityResolver
  */
 public class BeansDtdResolver implements EntityResolver {
-
+	// dtd 扩展名
 	private static final String DTD_EXTENSION = ".dtd";
-
+	// Spring beans DTD 的文件名
 	private static final String DTD_NAME = "spring-beans";
 
 	private static final Log logger = LogFactory.getLog(BeansDtdResolver.class);
@@ -58,17 +63,22 @@ public class BeansDtdResolver implements EntityResolver {
 			logger.trace("Trying to resolve XML entity with public ID [" + publicId +
 					"] and system ID [" + systemId + "]");
 		}
-
+		// 以 .dtd 结尾
 		if (systemId != null && systemId.endsWith(DTD_EXTENSION)) {
+			// 获取最后一个 / 的索引位置
 			int lastPathSeparator = systemId.lastIndexOf('/');
+			// 获取 spring-beans 的位置
 			int dtdNameStart = systemId.indexOf(DTD_NAME, lastPathSeparator);
+			// 存在 spring-beans
 			if (dtdNameStart != -1) {
 				String dtdFile = DTD_NAME + DTD_EXTENSION;
 				if (logger.isTraceEnabled()) {
 					logger.trace("Trying to locate [" + dtdFile + "] in Spring jar on classpath");
 				}
 				try {
+					// 创建 ClassPathResource 对象，相对于当前类对象路径的资源，其实就是 /org/springframework/beans/factory/xml/spring-beans.dtd
 					Resource resource = new ClassPathResource(dtdFile, getClass());
+					// 创建 InputSource 对象，并设置 publicId 和 systemId
 					InputSource source = new InputSource(resource.getInputStream());
 					source.setPublicId(publicId);
 					source.setSystemId(systemId);

@@ -28,6 +28,8 @@ import org.springframework.util.Assert;
 /**
  * {@link EntityResolver} implementation that delegates to a {@link BeansDtdResolver}
  * and a {@link PluggableSchemaResolver} for DTDs and XML schemas, respectively.
+ * <p>EntityResolver 实现，委托给 BeansDtdResolver 和 PluggableSchemaResolver
+ * 分别对 dtd 和 xsd 进行解析。
  *
  * @author Rob Harrop
  * @author Juergen Hoeller
@@ -38,23 +40,30 @@ import org.springframework.util.Assert;
  */
 public class DelegatingEntityResolver implements EntityResolver {
 
+	// dtd 文件后缀
 	/** Suffix for DTD files. */
 	public static final String DTD_SUFFIX = ".dtd";
 
+	// xsd 文件后缀
 	/** Suffix for schema definition files. */
 	public static final String XSD_SUFFIX = ".xsd";
 
-
+	// dtd 解析器
 	private final EntityResolver dtdResolver;
 
+	// xsd 解析器
 	private final EntityResolver schemaResolver;
 
 
 	/**
 	 * Create a new DelegatingEntityResolver that delegates to
 	 * a default {@link BeansDtdResolver} and a default {@link PluggableSchemaResolver}.
+	 * <p>创建一个新的 DelegatingEntityResolver 实例对象，委托给默认的 BeansDtdResolver 和默认的 PluggableSchemaResolver 。
+	 *
 	 * <p>Configures the {@link PluggableSchemaResolver} with the supplied
 	 * {@link ClassLoader}.
+	 * <p>使用提供的类加载器配置 PluggableSchemaResolver 。
+	 *
 	 * @param classLoader the ClassLoader to use for loading
 	 * (can be {@code null}) to use the default ClassLoader)
 	 */
@@ -66,6 +75,7 @@ public class DelegatingEntityResolver implements EntityResolver {
 	/**
 	 * Create a new DelegatingEntityResolver that delegates to
 	 * the given {@link EntityResolver EntityResolvers}.
+	 * <p>创建一个新的 DelegatingEntityResolver 实例对象，委托给指定的 EntityResolver ，即自定义解析器。
 	 * @param dtdResolver the EntityResolver to resolve DTDs with
 	 * @param schemaResolver the EntityResolver to resolve XML schemas with
 	 */
@@ -83,9 +93,11 @@ public class DelegatingEntityResolver implements EntityResolver {
 			throws SAXException, IOException {
 
 		if (systemId != null) {
+			// .dtd 后缀的解析，即 DTD 模式
 			if (systemId.endsWith(DTD_SUFFIX)) {
 				return this.dtdResolver.resolveEntity(publicId, systemId);
 			}
+			// .xsd 后缀的解析，即 XSD 模式
 			else if (systemId.endsWith(XSD_SUFFIX)) {
 				return this.schemaResolver.resolveEntity(publicId, systemId);
 			}

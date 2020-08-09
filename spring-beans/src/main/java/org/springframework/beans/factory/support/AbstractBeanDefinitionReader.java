@@ -51,6 +51,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 	/** Logger available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	// 实际上是构造函数的入参 DefaultListableBeanFactory
 	private final BeanDefinitionRegistry registry;
 
 	@Nullable

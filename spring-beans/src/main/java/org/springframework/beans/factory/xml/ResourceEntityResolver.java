@@ -35,6 +35,7 @@ import org.springframework.lang.Nullable;
  * through a {@link org.springframework.core.io.ResourceLoader} (usually,
  * relative to the resource base of an {@code ApplicationContext}), if applicable.
  * Extends {@link DelegatingEntityResolver} to also provide DTD and XSD lookup.
+ * <p>通过 ResourceLoader 解析实体引用,扩展了 DelegatingEntityResolver 以提供 DTD 和 XSD 查找。
  *
  * <p>Allows to use standard XML entities to include XML snippets into an
  * application context definition, for example to split a large XML file
@@ -75,13 +76,18 @@ public class ResourceEntityResolver extends DelegatingEntityResolver {
 	public InputSource resolveEntity(@Nullable String publicId, @Nullable String systemId)
 			throws SAXException, IOException {
 
+		// 先委托父类 DelegatingEntityResolver 的方法进行解析
 		InputSource source = super.resolveEntity(publicId, systemId);
 
+		// 解析失败，使用 resourceLoader 进行解析
 		if (source == null && systemId != null) {
 			String resourcePath = null;
 			try {
+				// 使用 UTF-8 解码 systemId
 				String decodedSystemId = URLDecoder.decode(systemId, "UTF-8");
+				// 转换成 URL 字符串
 				String givenUrl = new URL(decodedSystemId).toString();
+				// 解析文件资源的相对路径（相对于系统根路径）
 				String systemRootUrl = new File("").toURI().toURL().toString();
 				// Try relative to resource base if currently in system root.
 				if (givenUrl.startsWith(systemRootUrl)) {
@@ -100,7 +106,9 @@ public class ResourceEntityResolver extends DelegatingEntityResolver {
 				if (logger.isTraceEnabled()) {
 					logger.trace("Trying to locate XML entity [" + systemId + "] as resource [" + resourcePath + "]");
 				}
+				// 通过 resourceLoader 获取资源
 				Resource resource = this.resourceLoader.getResource(resourcePath);
+				// 创建 InputSource 实例对象，并设置 publicId 和 systemId 属性
 				source = new InputSource(resource.getInputStream());
 				source.setPublicId(publicId);
 				source.setSystemId(systemId);
@@ -110,11 +118,13 @@ public class ResourceEntityResolver extends DelegatingEntityResolver {
 			}
 			else if (systemId.endsWith(DTD_SUFFIX) || systemId.endsWith(XSD_SUFFIX)) {
 				// External dtd/xsd lookup via https even for canonical http declaration
+				// 将 http 声明转成 https
 				String url = systemId;
 				if (url.startsWith("http:")) {
 					url = "https:" + url.substring(5);
 				}
 				try {
+					// 通过构造 URL 来获取 InputSource 实例对象，并设置 publicId 和 systemId 属性
 					source = new InputSource(new URL(url).openStream());
 					source.setPublicId(publicId);
 					source.setSystemId(systemId);
