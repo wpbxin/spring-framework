@@ -26,10 +26,14 @@ import org.springframework.util.StringUtils;
 /**
  * Holder for a BeanDefinition with name and aliases.
  * Can be registered as a placeholder for an inner bean.
+ * <p>包含名 beanName 和 aliases 的 BeanDefinition 的持有者。
+ * 可以注册为内部 bean 的占位符。
  *
  * <p>Can also be used for programmatic registration of inner bean
  * definitions. If you don't care about BeanNameAware and the like,
  * registering RootBeanDefinition or ChildBeanDefinition is good enough.
+ * <p>还可以用于内部 bean 定义的编程注册。如果不关心 BeanNameAware 之类的东西，
+ * 那么注册 RootBeanDefinition 或 ChildBeanDefinition 就足够了。
  *
  * @author Juergen Hoeller
  * @since 1.0.2
@@ -39,10 +43,19 @@ import org.springframework.util.StringUtils;
  */
 public class BeanDefinitionHolder implements BeanMetadataElement {
 
+	/**
+	 * BeanDefinition 实例对象
+	 */
 	private final BeanDefinition beanDefinition;
 
+	/**
+	 * id or bean 名称
+	 */
 	private final String beanName;
 
+	/**
+	 * 别名 alias 集合
+	 */
 	@Nullable
 	private final String[] aliases;
 

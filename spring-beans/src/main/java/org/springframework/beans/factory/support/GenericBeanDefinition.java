@@ -25,11 +25,15 @@ import org.springframework.util.ObjectUtils;
  * Like any bean definition, it allows for specifying a class plus optionally
  * constructor argument values and property values. Additionally, deriving from a
  * parent bean definition can be flexibly configured through the "parentName" property.
+ * <p>用于标准 bean 定义的一站式服务类。与其他任意 bean 定义一样，它允许指定类以及可选
+ * 的构造器参数和属性值。此外，可以通过 parentName 属性灵活的配置父 bean 定义
  *
  * <p>In general, use this {@code GenericBeanDefinition} class for the purpose of
  * registering user-visible bean definitions (which a post-processor might operate on,
  * potentially even reconfiguring the parent name). Use {@code RootBeanDefinition} /
  * {@code ChildBeanDefinition} where parent/child relationships happen to be pre-determined.
+ * <p>通常，使用这个 GenericBeanDefinition 类来注册用户可见的bean定义(后处理器可能对其进行操作，
+ * 甚至可能重新配置 parentName )。如果父/子关系是预先确定的，请使用 RootBeanDefinition / ChildBeanDefinition。
  *
  * @author Juergen Hoeller
  * @since 2.5
