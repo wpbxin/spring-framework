@@ -1511,6 +1511,7 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * Decorate the given bean definition through a namespace handler, if applicable.
+	 * <p>如果适用的话，通过命名空间处理器装饰给定的beanDefinition
 	 * @param ele the current element
 	 * @param originalDef the current bean definition
 	 * @return the decorated bean definition
@@ -1532,6 +1533,7 @@ public class BeanDefinitionParserDelegate {
 		BeanDefinitionHolder finalDefinition = originalDef;
 
 		// Decorate based on custom attributes first.
+		// 1、遍历所有属性，看看是否有需要装饰的自定义属性
 		NamedNodeMap attributes = ele.getAttributes();
 		for (int i = 0; i < attributes.getLength(); i++) {
 			Node node = attributes.item(i);
@@ -1539,6 +1541,7 @@ public class BeanDefinitionParserDelegate {
 		}
 
 		// Decorate based on custom nested elements.
+		// 2、遍历所有的子节点/子元素，看看是否有需要装饰的自定义子元素
 		NodeList children = ele.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
 			Node node = children.item(i);
@@ -1552,6 +1555,7 @@ public class BeanDefinitionParserDelegate {
 	/**
 	 * Decorate the given bean definition through a namespace handler,
 	 * if applicable.
+	 * <p>如果适用的话，通过命名空间处理器装饰给定的beanDefinition
 	 * @param node the current child node
 	 * @param originalDef the current bean definition
 	 * @param containingBd the containing bean definition (if any)
@@ -1560,10 +1564,14 @@ public class BeanDefinitionParserDelegate {
 	public BeanDefinitionHolder decorateIfRequired(
 			Node node, BeanDefinitionHolder originalDef, @Nullable BeanDefinition containingBd) {
 
+		// 1、获取自定义标签的命名空间
 		String namespaceUri = getNamespaceURI(node);
+		// 2、对于非默认的自定义标签进行装饰
 		if (namespaceUri != null && !isDefaultNamespace(namespaceUri)) {
+			// 3、根据命名空间找到对应的命名空间处理器NamespaceHandler
 			NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);
 			if (handler != null) {
+				// 4、使用自定义的命名空间处理器NamespaceHandler进行装饰
 				BeanDefinitionHolder decorated =
 						handler.decorate(node, originalDef, new ParserContext(this.readerContext, this, containingBd));
 				if (decorated != null) {
