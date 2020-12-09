@@ -52,7 +52,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
 		Assert.hasText(name, "'name' must not be empty");
 		Assert.hasText(alias, "'alias' must not be empty");
 		synchronized (this.aliasMap) {
-			// 如果beanName和alias相同的话不记录alias，并移除对应的alias
+			// 1、如果 beanName 和 alias 相同的话不记录 alias ，并移除对应的 alias
 			if (alias.equals(name)) {
 				this.aliasMap.remove(alias);
 				if (logger.isDebugEnabled()) {
@@ -60,14 +60,15 @@ public class SimpleAliasRegistry implements AliasRegistry {
 				}
 			}
 			else {
+				// 2、获取 alias 已注册的 beanName
 				String registeredName = this.aliasMap.get(alias);
 				if (registeredName != null) {
-					// 已存在alias且对应的registeredName与beanName相同，不再重新注册
+					// 2.1、已存在 alias 且对应的 registeredName 与 beanName 相同，不再重新注册
 					if (registeredName.equals(name)) {
 						// An existing alias - no need to re-register
 						return;
 					}
-					// 允许覆盖alias
+					// 2.2、允许覆盖 alias
 					if (!allowAliasOverriding()) {
 						throw new IllegalStateException("Cannot define alias '" + alias + "' for name '" +
 								name + "': It is already registered for name '" + registeredName + "'.");
@@ -77,8 +78,9 @@ public class SimpleAliasRegistry implements AliasRegistry {
 								registeredName + "' with new target name '" + name + "'");
 					}
 				}
-				// alias循环检查
+				// 3、alias 循环指向检查
 				checkForAliasCircle(name, alias);
+				// 4、注册 alias
 				this.aliasMap.put(alias, name);
 				if (logger.isTraceEnabled()) {
 					logger.trace("Alias definition '" + alias + "' registered for name '" + name + "'");
@@ -97,6 +99,14 @@ public class SimpleAliasRegistry implements AliasRegistry {
 
 	/**
 	 * Determine whether the given name has the given alias registered.
+	 * <p>确定给定名称是否已注册给定别名
+	 * <p>这是 map 的循环指向判断。例如需要注册的name=1,alias=9,即aliasMap中的(alias, name) / (k,v) --> (9,1),
+	 * 此时入参就是(9,1)，判断类似以下几种场景的循环指向：
+	 * <li>(9,1) --> (1,9)</li>
+	 * <li>(9,1) --> (2,9) --> (1,2)</li>
+	 * <li>(9,1) --> (2,9) --> (3,2) --> (1,3)</li>
+	 * <p>总结下：前面的map中的key作为下一个map的v，第一个map的v作为最后的key，即形成一个环
+	 * <p>这几行简单的代码可以用于判断Map中已有的元素与即将put进去的(k,v)是否形成环
 	 * @param name the name to check
 	 * @param alias the alias to look for
 	 * @since 4.2.1
