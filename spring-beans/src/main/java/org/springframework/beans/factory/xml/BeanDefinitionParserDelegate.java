@@ -1481,11 +1481,13 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * Parse a custom element (outside of the default namespace).
+	 * <p>解析自定义元素(在默认命名空间之外)
 	 * @param ele the element to parse
 	 * @return the resulting bean definition
 	 */
 	@Nullable
 	public BeanDefinition parseCustomElement(Element ele) {
+		// containingBd 是父类 bean ，对顶层元素的解析应置为 null
 		return parseCustomElement(ele, null);
 	}
 
@@ -1497,15 +1499,18 @@ public class BeanDefinitionParserDelegate {
 	 */
 	@Nullable
 	public BeanDefinition parseCustomElement(Element ele, @Nullable BeanDefinition containingBd) {
+		// 获取对应的命名空间
 		String namespaceUri = getNamespaceURI(ele);
 		if (namespaceUri == null) {
 			return null;
 		}
+		// 根据命名空间找到对应的命名空间处理器 NamespaceHandler
 		NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);
 		if (handler == null) {
 			error("Unable to locate Spring NamespaceHandler for XML schema namespace [" + namespaceUri + "]", ele);
 			return null;
 		}
+		// 调用自定义的 NamespaceHandler 进行解析
 		return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));
 	}
 
@@ -1614,6 +1619,8 @@ public class BeanDefinitionParserDelegate {
 	 * <p>The default implementation uses {@link Node#getNamespaceURI}.
 	 * Subclasses may override the default implementation to provide a
 	 * different namespace identification mechanism.
+	 * <p>获取所提供节点的命名空间 URI，默认实现是 {@link org.w3c.dom.Node#getNamespaceURI}
+	 * <p>子类可以覆盖默认实现，以提供不同的命名空间标识机制。
 	 * @param node the node
 	 */
 	@Nullable
