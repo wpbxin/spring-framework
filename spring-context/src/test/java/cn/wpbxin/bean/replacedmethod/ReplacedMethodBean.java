@@ -1,4 +1,4 @@
-package wpbxin.bean.replacedmethod;
+package cn.wpbxin.bean.replacedmethod;
 
 public class ReplacedMethodBean {
 	public void replacedMethod() {

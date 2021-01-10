@@ -1,4 +1,4 @@
-package wpbxin.bean.replacedmethod;
+package cn.wpbxin.bean.replacedmethod;
 
 import org.springframework.beans.factory.support.MethodReplacer;
 

@@ -1,4 +1,4 @@
-package wpbxin.bean.lookupmethod;
+package cn.wpbxin.bean.lookupmethod;
 
 public class User {
 

@@ -72,6 +72,7 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 				}
 				String[] aliases = null;
 				if (shouldParseNameAsAliases()) {
+					// 获取 name 属性值作为别名 alias
 					String name = element.getAttribute(NAME_ATTRIBUTE);
 					if (StringUtils.hasLength(name)) {
 						aliases = StringUtils.trimArrayElements(StringUtils.commaDelimitedListToStringArray(name));
@@ -81,7 +82,7 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 				BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, id, aliases);
 				registerBeanDefinition(holder, parserContext.getRegistry());
 				if (shouldFireEvents()) {
-					// 需要同之监听器则进行处理
+					// 需要通知监听器则进行处理
 					BeanComponentDefinition componentDefinition = new BeanComponentDefinition(holder);
 					postProcessComponentDefinition(componentDefinition);
 					parserContext.registerComponent(componentDefinition);
@@ -116,6 +117,7 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 			return parserContext.getReaderContext().generateBeanName(definition);
 		}
 		else {
+			// 获取 id 属性
 			String id = element.getAttribute(ID_ATTRIBUTE);
 			if (!StringUtils.hasText(id) && shouldGenerateIdAsFallback()) {
 				id = parserContext.getReaderContext().generateBeanName(definition);

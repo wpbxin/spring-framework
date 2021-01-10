@@ -3,9 +3,9 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="replacedMethodBean" class="wpbxin.bean.replacedmethod.ReplacedMethodBean">
-		<replaced-method name="replacedMethod" replacer="replacer" />
+	<bean id="lookupMethodBean" class="cn.wpbxin.bean.lookupmethod.LookupMethodBean">
+		<lookup-method name="getBean" bean="student" />
 	</bean>
-
-	<bean id="replacer" class="wpbxin.bean.replacedmethod.RMethodReplacer" />
+	<bean id="teacher" class="cn.wpbxin.bean.lookupmethod.Teacher" />
+	<bean id="student" class="cn.wpbxin.bean.lookupmethod.Student" />
 </beans>
